@@ -1,0 +1,27 @@
+name: Teardown Infrastructure
+
+on:
+  workflow_dispatch:          # Enables a manual "Run workflow" trigger button on the web UI
+
+jobs:
+  cleanup-azure-resources:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Azure Login Authentication
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.10.0"
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Destroy (Safe Account Cleanup)
+      run: terraform destroy -auto-approve                        # <--- Automatically tears down the entire VM stack [HashiCorp]
