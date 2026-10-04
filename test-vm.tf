@@ -14,13 +14,7 @@ jobs:
     - name: Checkout Workflow Repository
       uses: actions/checkout@v4
 
-    # 2. Fetch your infrastructure files from your OTHER secret repository
-    - name: Fetch Infrastructure Code From Secret Repo
-      uses: actions/checkout@v4
-      with:
-        repository: 'Mohit-Kokate/AZ-104-Journey'
-        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
-        path: 'my-terraform-azure'                               
+                                
 
     # 3. Securely log into your Microsoft Azure account using the JSON block
     - name: Azure Login Authentication
