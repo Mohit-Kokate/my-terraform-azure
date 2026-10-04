@@ -42,4 +42,4 @@ jobs:
     # 6. Build and deploy the Windows VM to Azure
     - name: Terraform Apply (Live Cloud Build)
       working-directory: my-terraform-azure                      
-      run: terraform apply -auto-approve                         
+      run: terraform apply -auto-approve                        
