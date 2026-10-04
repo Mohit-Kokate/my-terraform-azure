@@ -18,7 +18,7 @@ jobs:
     - name: Fetch Infrastructure Code From Secret Repo
       uses: actions/checkout@v4
       with:
-        repository: 'Mohit-Kokate/AZ-104-Journey'
+        repository: 'Mohit-Kokate/my-terraform-azure'
         token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
         path: 'my-terraform-azure'                               
 
