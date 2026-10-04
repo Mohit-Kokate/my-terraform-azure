@@ -18,28 +18,28 @@ jobs:
     - name: Fetch Infrastructure Code From Secret Repo
       uses: actions/checkout@v4
       with:
-        repository: 'Mohit-Kokate/AZ-104-Journey'               # <--- Target repository updated perfectly here
-        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           # <--- Secure token to read your other repo
-        path: 'my-terraform-azure'                               # <--- Creates this folder name dynamically on the cloud runner
+        repository: 'Mohit-Kokate/AZ-104-Journey'
+        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
+        path: 'my-terraform-azure'                               
 
-    # 3. Securely log into your Microsoft Azure account
+    # 3. Securely log into your Microsoft Azure account using the JSON block
     - name: Azure Login Authentication
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your Azure Service Principal credentials JSON
+        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your updated JSON credential block
 
     # 4. Setup the HashiCorp Terraform engine
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: "1.10.0"                              # <--- Sets a rock-solid, stable engine version
+        terraform_version: "1.10.0"                              
 
     # 5. Initialize inside your dynamically matched path folder
     - name: Terraform Init
-      working-directory: my-terraform-azure                      # <--- Jumps into your repository path folder automatically [HashiCorp]
+      working-directory: my-terraform-azure                      
       run: terraform init
 
     # 6. Build and deploy the Windows VM to Azure
     - name: Terraform Apply (Live Cloud Build)
-      working-directory: my-terraform-azure                      # <--- Jumps into your repository path folder automatically [HashiCorp]
-      run: terraform apply -auto-approve                        # <--- Bypasses manual terminal "yes" inputs for full automation [HashiCorp]
+      working-directory: my-terraform-azure                      
+      run: terraform apply -auto-approve                         
