@@ -1,5 +1,4 @@
-name: Project 1 - Network Validation Pipeline
-
+name: Project 1 - test-vm
 on:
   push:
     branches:
@@ -10,36 +9,27 @@ jobs:
   deploy-windows-vm:
     runs-on: ubuntu-latest
     steps:
-    # 1. Pull the workflow configuration file from your current repository
-    - name: Checkout Workflow Repository
+    # 1. Pull the infrastructure code files directly from your current branch workspace
+    - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 2. Fetch your infrastructure files from your OTHER secret repository
-    - name: Fetch Infrastructure Code From Secret Repo
-      uses: actions/checkout@v4
-      with:
-        repository: 'Mohit-Kokate/my-terraform-azure'
-        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
-        path: 'my-terraform-azure'                               
-
-    # 3. Securely log into your Microsoft Azure account using the JSON block
+    # 2. Securely log into your Microsoft Azure account using your manual repository secret
     - name: Azure Login Authentication
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your updated JSON credential block
+        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your manually added JSON block safely
 
-    # 4. Setup the HashiCorp Terraform engine
+    # 3. Setup the HashiCorp Terraform engine
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.10.0"                              
 
-    # 5. Initialize inside your dynamically matched path folder
+    # 4. Initialize plugins inside your root repository folder
     - name: Terraform Init
-      working-directory: my-terraform-azure                      
       run: terraform init
 
-    # 6. Build and deploy the Windows VM to Azure
+    # 5. Build and deploy the Windows VM to Azure
     - name: Terraform Apply (Live Cloud Build)
-      working-directory: my-terraform-azure                      
-      run: terraform apply -auto-approve                         
+      run: terraform apply -auto-approve                         # <--- Bypasses manual terminal "yes" prompts for full automation [HashiCorp]
+            
