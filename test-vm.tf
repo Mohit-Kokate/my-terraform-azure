@@ -1,39 +1,59 @@
-name: Project 1 - test-vm
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
 
-on:
-  push:
-    branches:
-      - feature-add-vm        # Runs automatically on a code push to your test branch
-  workflow_dispatch:          # Enables the manual web button on GitHub
+provider "azurerm" {
+  features {}
+}
 
-jobs:
-  deploy-windows-vm:
-    runs-on: ubuntu-latest
-    steps:
-    # 1. Pull the workflow configuration file from your current repository
-    - name: Checkout Workflow Repository
-      uses: actions/checkout@v4
+data "azurerm_resource_group" "existing_rg" {
+  name = "sysops-automation-rg" 
+}
 
-                                
+data "azurerm_subnet" "existing_subnet" {
+  name                 = "frontend-subnet"     
+  virtual_network_name = "sysops-prod-vnet"     
+  resource_group_name  = data.azurerm_resource_group.existing_rg.name
+}
 
-    # 3. Securely log into your Microsoft Azure account using the JSON block
-    - name: Azure Login Authentication
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your updated JSON credential block
+resource "azurerm_network_interface" "win_nic" {
+  name                = "sysops-win-nic"
+  location            = data.azurerm_resource_group.existing_rg.location
+  resource_group_name = data.azurerm_resource_group.existing_rg.name
 
-    # 4. Setup the HashiCorp Terraform engine
-    - name: Setup Terraform CLI
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: "1.10.0"                              
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = data.azurerm_subnet.existing_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
-    # 5. Initialize inside your dynamically matched path folder
-    - name: Terraform Init
-      working-directory: my-terraform-azure                      
-      run: terraform init
+resource "azurerm_windows_virtual_machine" "sysops_win_vm" {
+  name                = "sysops-win-vm"
+  resource_group_name = data.azurerm_resource_group.existing_rg.name
+  location            = data.azurerm_resource_group.existing_rg.location
+  size                = "Standard_B2s" 
+  admin_username      = "sysopsadmin"
+  admin_password      = "P@ssw0rd123456!" 
 
-    # 6. Build and deploy the Windows VM to Azure
-    - name: Terraform Apply (Live Cloud Build)
-      working-directory: my-terraform-azure                      
-      run: terraform apply -auto-approve                         
+  network_interface_ids = [
+    azurerm_network_interface.win_nic.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
+}
