@@ -20,7 +20,7 @@ jobs:
       with:
         repository: 'Mohit-Kokate/AZ-104-Journey'
         token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
-        path: 'my-terraform-azure'                               
+        path: 'https://github.com/Mohit-Kokate/AZ-104-Journey'                               
 
     # 3. Securely log into your Microsoft Azure account
     - name: Azure Login Authentication
