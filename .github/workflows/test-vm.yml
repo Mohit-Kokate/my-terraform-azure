@@ -1,4 +1,4 @@
-name: test-vm
+name: Project 1 - Network Validation Pipeline
 
 on:
   push:
@@ -15,31 +15,31 @@ jobs:
       uses: actions/checkout@v4
 
     # 2. Fetch your infrastructure files from your OTHER secret repository
-     - name: Fetch Infrastructure Code From Secret Rep
-       uses: actions/checkout@v4
-       with:
-        repository: 'Mohit-Kokate/AZ-104-Journey' # <--- CHANGE THIS TO YOUR ACTUAL SECOND REPO NAME
-        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
-        path: 'my-terraform-azure'                                        
+    - name: Fetch Infrastructure Code From Secret Repo
+      uses: actions/checkout@v4
+      with:
+        repository: 'Mohit-Kokate/AZ-104-Journey'               # <--- Target repository updated perfectly here
+        token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           # <--- Secure token to read your other repo
+        path: 'my-terraform-azure'                               # <--- Creates this folder name dynamically on the cloud runner
 
     # 3. Securely log into your Microsoft Azure account
     - name: Azure Login Authentication
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}                  
+        creds: ${{ secrets.AZURE_CREDENTIALS }}                  # <--- Reads your Azure Service Principal credentials JSON
 
     # 4. Setup the HashiCorp Terraform engine
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: "1.10.0"                              
+        terraform_version: "1.10.0"                              # <--- Sets a rock-solid, stable engine version
 
     # 5. Initialize inside your dynamically matched path folder
     - name: Terraform Init
-      working-directory: my-terraform-azure                      
+      working-directory: my-terraform-azure                      # <--- Jumps into your repository path folder automatically [HashiCorp]
       run: terraform init
 
     # 6. Build and deploy the Windows VM to Azure
     - name: Terraform Apply (Live Cloud Build)
-      working-directory: my-terraform-azure                      
-      run: terraform apply -auto-approve                        
+      working-directory: my-terraform-azure                      # <--- Jumps into your repository path folder automatically [HashiCorp]
+      run: terraform apply -auto-approve                         # <--- Bypasses manual terminal "yes" inputs for full automation [HashiCorp]
