@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "existing_rg" {
-  name = "sysops-automation-rg" 
+  name = "sysops-terraform-rg" 
 }
 
 data "azurerm_subnet" "existing_subnet" {
