@@ -1,0 +1,33 @@
+name: test vm
+
+on:
+  push:                       
+  workflow_dispatch:          
+
+jobs:
+  validate-network:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.10.0"
+
+    # ➔ PASTE YOUR PATH IN THE STEPS BELOW:
+    - name: Run Formatting Check
+      working-directory: https://github.com/Mohit-Kokate/my-terraform-azure/blob/test/test-vm.tf  # <--- PASTE TARGET FOLDER PATH HERE
+      run: |
+        terraform fmt -check
+
+    - name: Local Pipeline Initialization
+      working-directory: https://github.com/Mohit-Kokate/my-terraform-azure/blob/test/test-vm.tf  # <--- PASTE TARGET FOLDER PATH HERE
+      run: |
+        terraform init -backend=false
+
+    - name: Run Syntax Validation Check
+      working-directory: https://github.com/Mohit-Kokate/my-terraform-azure/blob/test/test-vm.tf  # <--- PASTE TARGET FOLDER PATH HERE
+      run: |
+        terraform validate
