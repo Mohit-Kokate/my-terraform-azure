@@ -42,4 +42,4 @@ jobs:
     # 6. Build and deploy the Windows VM to Azure
     - name: Terraform Apply (Live Cloud Build)
       working-directory: my-terraform-azure                      # <--- Jumps into your repository path folder automatically [HashiCorp]
-      run: terraform apply -auto-approve                         # <--- Bypasses manual terminal "yes" inputs for full automation [HashiCorp]
+      run: terraform apply -auto-approve                        # <--- Bypasses manual terminal "yes" inputs for full automation [HashiCorp]
