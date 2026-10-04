@@ -15,12 +15,12 @@ jobs:
       uses: actions/checkout@v4
 
     # 2. Fetch your infrastructure files from your OTHER secret repository
-    - name: Fetch Infrastructure Code From Secret Repo
-      uses: actions/checkout@v4
-      with:
-        repository: 'Mohit-Kokate/AZ-104-Journey'
+     - name: Fetch Infrastructure Code From Secret Rep
+       uses: actions/checkout@v4
+       with:
+        repository: 'Mohit-Kokate/AZ-104-Journey' # <--- CHANGE THIS TO YOUR ACTUAL SECOND REPO NAME
         token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}           
-        path: 'https://github.com/Mohit-Kokate/AZ-104-Journey'                               
+        path: 'my-terraform-azure'                                        
 
     # 3. Securely log into your Microsoft Azure account
     - name: Azure Login Authentication
