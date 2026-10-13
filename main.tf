@@ -14,13 +14,13 @@ provider "azurerm" {
 
 # 2. Create a Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-windows-vm-prod"
+  name     = "rg-windows-vm"
   location = "East US"
 }
 
 # 3. Create a Virtual Network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-prod"
+  name                = "vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -106,7 +106,7 @@ resource "azurerm_storage_share" "fileshare" {
 
 # 10. Create the Windows Virtual Machine
 resource "azurerm_windows_virtual_machine" "vm" {
-  name                = "win-vm-prod"
+  name                = "win-vm"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_D2s_v5"
