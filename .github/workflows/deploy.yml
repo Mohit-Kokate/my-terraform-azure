@@ -17,13 +17,11 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 1. Parse your single JSON secret and export variables to the environment
-    - name: Parse Azure Credentials
-      run: |
-        echo "ARM_CLIENT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId)" >> $GITHUB_ENV
-        echo "ARM_CLIENT_SECRET=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientSecret)" >> $GITHUB_ENV
-        echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .subscriptionId)" >> $GITHUB_ENV
-        echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .tenantId)" >> $GITHUB_ENV
+    # 1. Log directly into Azure using your existing JSON secret bundle
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -37,5 +35,6 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -input=false
 
+    # 2. Azure login handles the underlying authentication tokens automatically
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
